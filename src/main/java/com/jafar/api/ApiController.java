@@ -8,6 +8,6 @@ public class ApiController {
 
     @GetMapping("/")
     public String home(){
-        return "hello jafar";
+         return "hello! jafar";
     }
 }
