@@ -38,6 +38,7 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           source: project.jar
           target: /home/ubuntu/api/tobe
+          debug: true
 
       - name: SSH로 EC2에 접속하기
         uses: appleboy/ssh-action@v1.0.3
