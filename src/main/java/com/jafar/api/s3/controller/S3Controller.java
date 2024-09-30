@@ -1,6 +1,6 @@
-package com.jafar.api.controller;
+package com.jafar.api.s3.controller;
 
-import com.jafar.api.service.ImageUploadService;
+import com.jafar.api.s3.service.ImageUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
