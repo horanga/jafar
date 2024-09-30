@@ -1,4 +1,4 @@
-package com.jafar.api.service;
+package com.jafar.api.s3.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;

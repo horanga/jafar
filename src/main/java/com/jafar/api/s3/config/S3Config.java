@@ -1,4 +1,4 @@
-package com.jafar.api.config;
+package com.jafar.api.s3.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
