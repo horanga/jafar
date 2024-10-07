@@ -1,6 +1,6 @@
-package com.jafar.api.picture.entity;
+package com.jafar.api.domain.picture.entity;
 
-import com.jafar.api.member.entity.Member;
+import com.jafar.api.domain.member.entity.Member;
 import jakarta.persistence.*;
 
 @Entity

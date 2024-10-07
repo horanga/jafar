@@ -1,6 +1,6 @@
-package com.jafar.api.picture.entity;
+package com.jafar.api.domain.picture.entity;
 
-import com.jafar.api.member.entity.Member;
+import com.jafar.api.domain.member.entity.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -20,4 +20,10 @@ public class Picture {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    public Picture(String url, String fileName, Member member) {
+        this.url = url;
+        this.fileName = fileName;
+        this.member = member;
+    }
 }
