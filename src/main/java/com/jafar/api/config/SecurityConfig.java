@@ -89,6 +89,7 @@ public class SecurityConfig {
                         .requestMatchers("/").permitAll()
                         .anyRequest().authenticated());
 
+
         //세션 설정 : STATELESS
         http
                 .sessionManagement((session) -> session
