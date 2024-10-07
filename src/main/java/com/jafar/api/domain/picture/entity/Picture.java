@@ -20,4 +20,10 @@ public class Picture {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    public Picture(String url, String fileName, Member member) {
+        this.url = url;
+        this.fileName = fileName;
+        this.member = member;
+    }
 }

@@ -1,4 +1,4 @@
-package com.jafar.api.domain.oauth2.dto;
+package com.jafar.api.oauth2.dto;
 
 public interface OAuth2Response {
 

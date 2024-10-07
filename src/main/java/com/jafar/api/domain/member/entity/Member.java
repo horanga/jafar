@@ -18,15 +18,18 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String email;
+
     private String userName;
 
-    private String loginId;
+    private String name;
 
     private String role;
 
-    public Member(String userName, String loginId, String role) {
+    public Member(String email, String userName, String name, String role) {
+        this.email = email;
         this.userName = userName;
-        this.loginId = loginId;
+        this.name = name;
         this.role = role;
     }
 }

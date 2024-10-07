@@ -1,22 +1,18 @@
-package com.jafar.api.domain.oauth2.dto;
+package com.jafar.api.oauth2.dto;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
-public class CustomOauth2User implements OAuth2User {
+public class CustomOAuth2User implements OAuth2User {
 
-    private final OAuth2Response oAuth2Response;
+    private final UserDto userDto;
 
-    private final String role;
-
-    public CustomOauth2User(OAuth2Response oAuth2Response, String role) {
-        this.oAuth2Response = oAuth2Response;
-        this.role = role;
+    public CustomOAuth2User(UserDto userDto) {
+        this.userDto = userDto;
     }
 
     @Override
@@ -26,22 +22,29 @@ public class CustomOauth2User implements OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+
         Collection<GrantedAuthority> collection = new ArrayList<>();
+
         collection.add(new GrantedAuthority() {
+
             @Override
             public String getAuthority() {
-                return role;
+
+                return userDto.getRole();
             }
         });
+
         return collection;
     }
 
     @Override
     public String getName() {
-        return oAuth2Response.getName();
+
+        return userDto.getName();
     }
 
-    public String getUserName(){
-        return oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
+    public String getUsername() {
+
+        return userDto.getUserName();
     }
 }

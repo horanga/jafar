@@ -1,11 +1,8 @@
-package com.jafar.api.domain.oauth2.service;
+package com.jafar.api.oauth2.service;
 
 import com.jafar.api.domain.member.entity.Member;
 import com.jafar.api.domain.member.repository.MemberRepository;
-import com.jafar.api.domain.oauth2.dto.CustomOauth2User;
-import com.jafar.api.domain.oauth2.dto.GoogleResponse;
-import com.jafar.api.domain.oauth2.dto.NaverResponse;
-import com.jafar.api.domain.oauth2.dto.OAuth2Response;
+import com.jafar.api.oauth2.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -15,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class CustomerOauth2UserService extends DefaultOAuth2UserService {
+public class CustomerOAuth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
 
@@ -38,22 +35,34 @@ public class CustomerOauth2UserService extends DefaultOAuth2UserService {
             return null;
         }
 
-        String role = null;
+        String username = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
+        Member existData = memberRepository.findByUserName(username);
 
-        String userName = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
-        Member existData = memberRepository.findByUserName(userName);
+        if (existData == null) {
 
-        if(existData == null){
-            Member member = new Member(userName, oAuth2Response.getEmail(), "ROLE_USER");
-            memberRepository.save(member);
-        } else{
-            role = existData.getRole();
-            existData.setUserName(userName);
-            existData.setLoginId(oAuth2Response.getEmail());
-            existData.setRole("ROLE_USER");
+            Member userEntity = new Member(oAuth2Response.getEmail(), username, oAuth2Response.getName(), "ROLE_USER");
+            memberRepository.save(userEntity);
 
+            UserDto userDTO = new UserDto();
+            userDTO.setUserName(username);
+            userDTO.setName(oAuth2Response.getName());
+            userDTO.setRole("ROLE_USER");
+
+            return new CustomOAuth2User(userDTO);
         }
+        else {
 
-        return new CustomOauth2User(oAuth2Response, role);
+            existData.setEmail(oAuth2Response.getEmail());
+            existData.setUserName(oAuth2Response.getName());
+
+            memberRepository.save(existData);
+
+            UserDto userDTO = new UserDto();
+            userDTO.setUserName(existData.getUserName());
+            userDTO.setName(oAuth2Response.getName());
+            userDTO.setRole(existData.getRole());
+
+            return new CustomOAuth2User(userDTO);
+        }
     }
 }
