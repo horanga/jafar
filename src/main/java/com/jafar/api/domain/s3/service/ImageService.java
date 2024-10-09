@@ -4,10 +4,12 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.jafar.api.domain.member.entity.Member;
 import com.jafar.api.domain.member.repository.MemberRepository;
-import com.jafar.api.domain.picture.entity.EditingPicture;
-import com.jafar.api.domain.picture.repository.EditingPictureRepository;
+import com.jafar.api.domain.picture.entity.Picture;
+import com.jafar.api.domain.picture.repository.PictureRepository;
+import com.jafar.api.oauth2.dto.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,20 +26,16 @@ public class ImageService {
 
     private final AmazonS3 amazonS3;
     private final MemberRepository memberRepository;
-    private final EditingPictureRepository editingPictureRepository;
-
+    private final PictureRepository pictureRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public EditingPicture saveImage(MultipartFile file, Long loginId) throws IOException {
-
+    public Picture saveImage(MultipartFile file, CustomOAuth2User oauth2Member) throws IOException {
+        Member member = memberRepository.findByLoginId(oauth2Member.getUsername());
         try {
-            Member member = memberRepository.findById(loginId)
-                    .orElseThrow(() -> new RuntimeException("Member not found"));
 
-            // S3에 이미지 업로드
-            String fileName = loginId + "/" + generateFileName(file.getOriginalFilename());
+            String fileName = member.getUserName() + "/" + generateFileName(file.getOriginalFilename());
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(file.getSize());
             metadata.setContentType(file.getContentType());
@@ -49,14 +47,14 @@ public class ImageService {
             String imageUrl = amazonS3.getUrl(bucket, fileName).toString();
 
             // EditingPicture 저장
-            EditingPicture editingPicture = new EditingPicture();
-            editingPicture.setUrl(imageUrl);
-            editingPicture.setFileName(fileName);
-            editingPicture.setMember(member);
+            Picture picture = new Picture();
+            picture.setUrl(imageUrl);
+            picture.setFileName(fileName);
+            picture.setMember(member);
 
-            return editingPictureRepository.save(editingPicture);
+            return pictureRepository.save(picture);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to save image for loginId: " + loginId, e);
+            throw new RuntimeException("Failed to save image for loginId: " + oauth2Member.getName(), e);
         }
 
     }
