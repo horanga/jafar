@@ -1,6 +1,5 @@
 package com.jafar.api.jwt;
 
-import com.jafar.api.domain.member.entity.Member;
 import com.jafar.api.oauth2.dto.CustomOAuth2User;
 import com.jafar.api.oauth2.dto.UserDto;
 import jakarta.servlet.FilterChain;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -66,7 +64,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         UserDto userDto = new UserDto();
         userDto.setRole(role);
-        userDto.setUserName(username);
+        userDto.setLoginId(username);
 
 
         //UserDetails에 회원 정보 객체 담기
