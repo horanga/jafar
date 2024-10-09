@@ -13,7 +13,7 @@ public class UserDto {
 
     private String role;
 
-    private String name;
-
     private String userName;
+
+    private String loginId;
 }
