@@ -18,15 +18,15 @@ public class S3Controller {
     @Autowired
     private ImageService imageService;
 
-    @PostMapping("/save")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("loginId") Long loginId) {
-        try {
-            EditingPicture uploadedPicture = imageService.saveImage(file, loginId);
-            return ResponseEntity.ok(uploadedPicture.getFileName());
-        } catch (IOException e) {
-            return ResponseEntity.badRequest().body("Upload failed: " + e.getMessage());
-        }
-    }
+//    @PostMapping("/save")
+//    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("loginId") Long loginId) {
+//        try {
+//            EditingPicture uploadedPicture = imageService.saveImage(file, loginId);
+//            return ResponseEntity.ok(uploadedPicture.getFileName());
+//        } catch (IOException e) {
+//            return ResponseEntity.badRequest().body("Upload failed: " + e.getMessage());
+//        }
+//    }
 
 /*
     @GetMapping("/download/{fileName}")

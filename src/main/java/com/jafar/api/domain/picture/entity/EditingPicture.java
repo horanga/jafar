@@ -2,12 +2,14 @@ package com.jafar.api.domain.picture.entity;
 
 import com.jafar.api.domain.member.entity.Member;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EditingPicture {
 
     @Id

@@ -14,9 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
 
 @Service
 @RequiredArgsConstructor
@@ -30,37 +29,32 @@ public class ImageService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public EditingPicture saveImage(MultipartFile file, Long loginId) throws IOException {
-
+    public Map<String, String> saveImage(MultipartFile file) throws IOException {
         try {
-            Member member = memberRepository.findById(loginId)
-                    .orElseThrow(() -> new RuntimeException("Member not found"));
-
             // S3에 이미지 업로드
-            String fileName = loginId + "/" + generateFileName(file.getOriginalFilename());
+            String fileName = generateFileName(file.getOriginalFilename());
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(file.getSize());
             metadata.setContentType(file.getContentType());
 
             try (InputStream inputStream = file.getInputStream()) {
-                amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, metadata));
+                amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, metadata)
+                        .withCannedAcl(CannedAccessControlList.PublicRead));
             }
 
+            // S3에 업로드된 이미지의 URL 반환
             String imageUrl = amazonS3.getUrl(bucket, fileName).toString();
 
-            // EditingPicture 저장
-            EditingPicture editingPicture = new EditingPicture();
-            editingPicture.setUrl(imageUrl);
-            editingPicture.setFileName(fileName);
-            editingPicture.setMember(member);
+            Map<String, String> imageMap = new HashMap<>();
+            imageMap.put("fileName", fileName);
+            imageMap.put("imageUrl", imageUrl);
 
-            return editingPictureRepository.save(editingPicture);
+            return imageMap;
+
         } catch (Exception e) {
-            throw new RuntimeException("Failed to save image for loginId: " + loginId, e);
+            throw new RuntimeException("Failed to save image", e);
         }
-
     }
-
 
 /*
 
