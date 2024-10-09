@@ -1,24 +1,30 @@
 package com.jafar.api.domain.picture.controller;
 
+import com.jafar.api.common.response.ApiResponse;
 import com.jafar.api.domain.member.entity.Member;
+import com.jafar.api.domain.member.exception.MemberNotFoundException;
+import com.jafar.api.domain.picture.dto.PictureResponse;
 import com.jafar.api.domain.picture.entity.Picture;
+import com.jafar.api.domain.picture.service.PictureService;
 import com.jafar.api.domain.s3.service.ImageService;
 import com.jafar.api.oauth2.dto.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -28,6 +34,9 @@ public class PictureController {
 
     @Autowired
     private ImageService imageService;
+
+    @Autowired
+    private PictureService pictureService;
 
     @Operation(summary = "사진 등록")
     @PostMapping(value = "/save" ,consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
@@ -40,4 +49,24 @@ public class PictureController {
             return ResponseEntity.badRequest().body("Upload failed: " + e.getMessage());
         }
     }
+
+    @Operation(summary = "유저별 사진 조회")
+    @GetMapping()
+    public ResponseEntity<ApiResponse<Page<PictureResponse>>> getPicturesByMemberId(
+            @AuthenticationPrincipal CustomOAuth2User member,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<PictureResponse> pictures = pictureService.memberList(member, pageable);
+            return ResponseEntity.ok(new ApiResponse<>("success", "Pictures retrieved successfully", pictures));
+        } catch (MemberNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse<>("error", e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>("error", "An error occurred while retrieving pictures", null));
+        }
+    }
+
 }

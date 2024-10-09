@@ -9,7 +9,6 @@ import com.jafar.api.domain.picture.repository.PictureRepository;
 import com.jafar.api.oauth2.dto.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +31,7 @@ public class ImageService {
     private String bucket;
 
     public Picture saveImage(MultipartFile file, CustomOAuth2User oauth2Member) throws IOException {
-        Member member = memberRepository.findByLoginId(oauth2Member.getUsername());
+        Member member = memberRepository.findByEmail(oauth2Member.getName());
         try {
 
             String fileName = member.getUserName() + "/" + generateFileName(file.getOriginalFilename());
