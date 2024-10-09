@@ -20,16 +20,16 @@ public class Member {
 
     private String email;
 
-    private String userName;
+    private String loginId;
 
-    private String name;
+    private String userName;
 
     private String role;
 
-    public Member(String email, String userName, String name, String role) {
+    public Member(String email, String loginId, String userName, String role) {
         this.email = email;
+        this.loginId = loginId;
         this.userName = userName;
-        this.name = name;
         this.role = role;
     }
 }
