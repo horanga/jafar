@@ -35,16 +35,17 @@ public class CustomerOAuth2UserService extends DefaultOAuth2UserService {
             return null;
         }
 
-        String loginId = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
-        Member existData = memberRepository.findByLoginId(loginId);
+        String providerId = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
+        Member existData = memberRepository.findByEmail(providerId);
 
         if (existData == null) {
 
-            Member userEntity = new Member(oAuth2Response.getEmail(), loginId, oAuth2Response.getName(), "ROLE_USER");
+            Member userEntity = new Member(oAuth2Response.getEmail(), providerId, oAuth2Response.getName(), "ROLE_USER");
             memberRepository.save(userEntity);
 
             UserDto userDTO = new UserDto();
-            userDTO.setLoginId(loginId);
+            userDTO.setProviderId(providerId);
+            userDTO.setEmail(oAuth2Response.getEmail());
             userDTO.setUserName(oAuth2Response.getName());
             userDTO.setRole("ROLE_USER");
 
@@ -54,12 +55,12 @@ public class CustomerOAuth2UserService extends DefaultOAuth2UserService {
 
             existData.setEmail(oAuth2Response.getEmail());
             existData.setUserName(oAuth2Response.getName());
-            existData.setLoginId(loginId);
+            existData.setProviderId(providerId);
 
             memberRepository.save(existData);
 
             UserDto userDTO = new UserDto();
-            userDTO.setLoginId(existData.getLoginId());
+            userDTO.setProviderId(existData.getProviderId());
             userDTO.setUserName(oAuth2Response.getName());
             userDTO.setRole(existData.getRole());
 

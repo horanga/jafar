@@ -1,9 +1,6 @@
 package com.jafar.api.domain.member.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,17 +15,18 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String email;
 
-    private String loginId;
+    private String providerId;
 
     private String userName;
 
     private String role;
 
-    public Member(String email, String loginId, String userName, String role) {
+    public Member(String email, String providerId, String userName, String role) {
         this.email = email;
-        this.loginId = loginId;
+        this.providerId = providerId;
         this.userName = userName;
         this.role = role;
     }
