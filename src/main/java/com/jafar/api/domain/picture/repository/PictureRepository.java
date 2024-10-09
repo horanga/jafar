@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
 public interface PictureRepository extends JpaRepository<Picture, Long> {
     @Query("SELECT new com.jafar.api.domain.picture.dto.PictureResponse(ep.id, ep.url, ep.fileName) " +
             "FROM Picture ep " +
-            "WHERE ep.member.id = :memberId " +
+            "WHERE ep.member.email = :email " +
             "ORDER BY ep.id DESC")
-    Page<PictureResponse> findPicturesByMemberId(@Param("memberId") Long memberId, Pageable pageable);
+    Page<PictureResponse> findPicturesByMember(@Param("email") String email, Pageable pageable);
 
 }

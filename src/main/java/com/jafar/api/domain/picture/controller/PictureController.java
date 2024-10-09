@@ -51,14 +51,14 @@ public class PictureController {
     }
 
     @Operation(summary = "유저별 사진 조회")
-    @GetMapping("/member/{memberId}")
+    @GetMapping()
     public ResponseEntity<ApiResponse<Page<PictureResponse>>> getPicturesByMemberId(
-            @PathVariable Long memberId,
+            @AuthenticationPrincipal CustomOAuth2User member,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         try {
             Pageable pageable = PageRequest.of(page, size);
-            Page<PictureResponse> pictures = pictureService.memberList(memberId, pageable);
+            Page<PictureResponse> pictures = pictureService.memberList(member, pageable);
             return ResponseEntity.ok(new ApiResponse<>("success", "Pictures retrieved successfully", pictures));
         } catch (MemberNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
