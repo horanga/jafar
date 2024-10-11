@@ -37,6 +37,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.addCookie(createCookie("Authorization", token));
         response.sendRedirect("http://43.203.233.134:3000/");
+
     }
 
     private Cookie createCookie(String authorization, String token) {
