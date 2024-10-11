@@ -44,5 +44,6 @@ public class SwaggerConfig {
                         .addServersItem(new Server().url(serverUrl))
                         .addSecurityItem(securityRequirement)
                         .components(components);
+
         }
 }
